@@ -245,7 +245,7 @@
 										size[ alternate ] = resized_window[ 'outer' + Alternate ];
 										resized_window.close( );
 									}
-									resized_window = window.open( window.location + '#', 'resized', 'resizable,status=1,width=800,height=600' );
+									resized_window = window.open( window.location + '#', 'resized', 'resizable,scrollbars=1,width=800,height=600' );
 									var resize_popup = function( ) {
 										var innerSize;
 										if ( /AppleWebKit/.test(navigator.userAgent) ) {
