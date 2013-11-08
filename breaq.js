@@ -111,11 +111,8 @@
 				
 				return (function() {
 					extract_unit_from_size( );
-					if ( size.unit == 'em' || size.unit == 'rem' ) {
-						return size.number * em_to_px;
-					} else if ( size.unit == 'px' ) {
-						return size.number;
-					}
+					convert_em_to_pixel( );
+					return round_pixel( );
 				})();
 
 				function extract_unit_from_size( ) {
@@ -123,6 +120,18 @@
 						number: Number( size.replace( /[^\d\.]/g, '' ) ),
 						unit: size.replace( /[\d\.]/g, '' ),
 					};
+				}
+
+				function convert_em_to_pixel( ) {
+					if ( size.unit == 'em' || size.unit == 'rem' ) {
+						size = size.number * em_to_px;
+					} else if ( size.unit == 'px' ) {
+						size = size.number;
+					}
+				}
+
+				function round_pixel( ) {
+					return Math.round(size*100)/100;
 				}
 			}
 
