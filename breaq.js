@@ -208,7 +208,7 @@
 						panel.addFluidZoneToPanel( 'height', fluidZones.height[ j ] );
 						panel.addBreakLineToPanel( );
 					}
-					panel.addFluidZoneToPanel( 'no', ' ' );
+					panel.addFluidZoneToPanel( 'no', ['Breaq'], 'http://tzi.fr/CSS/Responsive/Breaq-bookmarklet' );
 					for ( var i=fluidZones.width.length-1; i>-1; i-- ) {
 						panel.addFluidZoneToPanel( 'width', fluidZones.width[ i ] );
 					}
@@ -235,9 +235,7 @@
 
 				// public panel methods
 				return {
-					addFluidZoneToPanel: function( direction, values ) {
-
-						var values = values;
+					addFluidZoneToPanel: function( direction, values, href ) {
 
 						(function() {
 							var zone = document.createElement( 'span' );
@@ -255,13 +253,21 @@
 							return (function() {
 								if ( typeof( values[ i ] ) == 'number' ) {
 									createResizeButtonElement( i );
+								} else if (href) {
+									createResizeLinkElement( );
 								} else {
-									createResizeTextElement( );
-								}
+                                    createResizeTextElement( );
+                                }
 								element.innerHTML = values[ i ];
 								element.setAttribute( 'style', 'color: white; font-weight: bold; font-size: 16px; text-decoration: none; border: 0; float: ' + ( values.length == 1 ? 'none' : i == 0 ? 'left' : 'right' ) );
 								return element;
 							})();
+
+                            function createResizeLinkElement( ) {
+                                element = document.createElement( 'a' );
+                                element.setAttribute('href', href);
+                                element.setAttribute('target', '_blank');
+                            }
 
 							function createResizeTextElement( ) {
 								element = document.createElement( 'span' );
