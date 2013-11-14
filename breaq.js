@@ -147,6 +147,7 @@
 				if ( media_size_selector_in_px.property == 'min-width' ||  media_size_selector_in_px.property == 'min-height' ) {
 					breakpoint.px--;
 				}
+				breakpoint.px = Math.ceil(breakpoint.px);
 				if ( breakpoint.px > 0 ) {
 					if ( media_size_selector_in_px.property == 'max-width' ||  media_size_selector_in_px.property == 'min-width' ) {
 						breakpoint.type = 'width';
