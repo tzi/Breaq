@@ -3,18 +3,18 @@
   var breakpoints = { width: [ ], height: [ ] };
 
 	(function() {
-		parse_css_get_breakpoints( );
-		create_action_panel( );
+		parseCssGetBreakpoints( );
+		createActionPanel( );
 	})();
 
-	function parse_css_get_breakpoints( ) {
+	function parseCssGetBreakpoints( ) {
 
-		var media_size_selectors_in_px = [ ];
+		var mediaSizeSelectorsInPx = [ ];
 
 		(function() {
-			parse_css_get_media_size_selectors_in_px( );
-			for ( var i=0; i<media_size_selectors_in_px.length; i++ ) {
-				var breakpoint = get_breakpoint_from_media_size_selector( media_size_selectors_in_px[ i ] );
+			parseCssGetMediaSizeSelectorsInPx( );
+			for ( var i=0; i<mediaSizeSelectorsInPx.length; i++ ) {
+				var breakpoint = getBreakpointFromMediaSizeSelector( mediaSizeSelectorsInPx[ i ] );
 				if ( 
 					typeof( breakpoint.type ) != 'undefined' &&
 					breakpoints[ breakpoint.type ].indexOf( breakpoint.px ) == -1
@@ -26,43 +26,43 @@
 			breakpoints.height = breakpoints.height.sort(function(a, b){return a - b;});
 		})();
 
-		function parse_css_get_media_size_selectors_in_px( ) {
+		function parseCssGetMediaSizeSelectorsInPx( ) {
 
-			var em_to_px;
-			var media_size_selectors = [ ];
+			var emToPxRatio;
+			var mediaSizeSelectors = [ ];
 
 			(function() {
-				em_to_px = get_em_in_px( );
-				parse_css_get_media_size_selectors( );
-				for ( var i=0; i<media_size_selectors.length; i++ ) {
-					media_size_selectors_in_px[ i ] = media_size_selectors[ i ];
-					media_size_selectors_in_px[ i ].px = convert_size_in_pixel( media_size_selectors[ i ].value );
+				emToPxRatio = getEmInPxRatio( );
+				parseCssGetMediaSizeSelectors( );
+				for ( var i=0; i<mediaSizeSelectors.length; i++ ) {
+					mediaSizeSelectorsInPx[ i ] = mediaSizeSelectors[ i ];
+					mediaSizeSelectorsInPx[ i ].px = convertSizeInPixel( mediaSizeSelectors[ i ].value );
 				}
 			})();
 
-			function parse_css_get_media_size_selectors( ) {
+			function parseCssGetMediaSizeSelectors( ) {
 
 				(function() {
-					var media_selectors = parse_css_get_media_selectors( );
-					for( var i=0; i<media_selectors.length; i++ ) {
-						add_media_size_selectors_from_media_selector( media_selectors[ i ] );
+					var mediaSelectors = parseCssGetMediaSelectors( );
+					for( var i=0; i<mediaSelectors.length; i++ ) {
+						addMediaSizeSelectorsFromMediaSelector( mediaSelectors[ i ] );
 					}
 				})();
 
-				function parse_css_get_media_selectors( ) {
+				function parseCssGetMediaSelectors( ) {
 
 					return (function() {
-						var rules = parse_css_get_rules( );
-						var media_selectors = [ ];
+						var rules = parseCssGetRules( );
+						var mediaSelectors = [ ];
 						for( var i=0; i<rules.length; i++ ) {
-							if ( is_media_rules( rules[ i ] ) ) {
-								media_selectors.push( rules[ i ].media.mediaText );
+							if ( isMediaRule( rules[ i ] ) ) {
+								mediaSelectors.push( rules[ i ].media.mediaText );
 							}
 						}
-						return media_selectors;
+						return mediaSelectors;
 					})();
 
-					function parse_css_get_rules( ) {
+					function parseCssGetRules( ) {
 						var rules = [ ];
 						for( var i=0; i<document.styleSheets.length; i++ ) {
 							try {
@@ -76,82 +76,82 @@
 						return rules;
 					}
 
-					function is_media_rules( rule ) {
+					function isMediaRule( rule ) {
 						return ( typeof( rule.media ) != 'undefined' );
 					}
 				}
 
-				function add_media_size_selectors_from_media_selector( media_selector ) {
+				function addMediaSizeSelectorsFromMediaSelector( mediaSelector ) {
 
 					(function() {
-						var parts = media_selector.split( '(' );
-						for ( var i=1; i<parts.length; i++ ) {
-							if ( has_media_rule_part_a_size_selector( parts[ i ] ) ) {
-								media_size_selectors.push( get_size_selector_from_media_selector_part( parts[ i ] ) );
+						var mediaSelectorParts = mediaSelector.split( '(' );
+						for ( var i=1; i<mediaSelectorParts.length; i++ ) {
+							if ( isMediaRulePartASizeSelector( mediaSelectorParts[ i ] ) ) {
+								mediaSizeSelectors.push( getSizeSelectorFromMediaSelectorPart( mediaSelectorParts[ i ] ) );
 							}
 						}
 					})();
 
-					function has_media_rule_part_a_size_selector( media_selector_part ) {
-						return ( media_selector_part.indexOf( ':' ) != -1 );
+					function isMediaRulePartASizeSelector( mediaSelectorPart ) {
+						return ( mediaSelectorPart.indexOf( ':' ) != -1 );
 					}
 
-					function get_size_selector_from_media_selector_part( media_selector_part ) {
+					function getSizeSelectorFromMediaSelectorPart( mediaSelectorPart ) {
 						return { 
-							property: media_selector_part.split( ':' )[ 0 ].trim( ),
-							value: media_selector_part.split( ':' )[ 1 ].split( ')' )[ 0 ].trim( )
+							property: mediaSelectorPart.split( ':' )[ 0 ].trim( ),
+							value: mediaSelectorPart.split( ':' )[ 1 ].split( ')' )[ 0 ].trim( )
 						};
 					}
 				}
 			}
 
-			function convert_size_in_pixel( size ) {
+			function convertSizeInPixel( size ) {
 
 				var size = size;
 				
 				return (function() {
-					extract_unit_from_size( );
-					convert_em_to_pixel( );
-					return round_pixel( );
+					extractUnitFromSize( );
+					convertEmToPixel( );
+					return roundPixel( );
 				})();
 
-				function extract_unit_from_size( ) {
+				function extractUnitFromSize( ) {
 					size = {
 						number: Number( size.replace( /[^\d\.]/g, '' ) ),
-						unit: size.replace( /[\d\.]/g, '' ),
+						unit: size.replace( /[\d\.]/g, '' )
 					};
 				}
 
-				function convert_em_to_pixel( ) {
+				function convertEmToPixel( ) {
 					if ( size.unit == 'em' || size.unit == 'rem' ) {
-						size = size.number * em_to_px;
+						size = size.number * emToPxRatio;
 					} else if ( size.unit == 'px' ) {
 						size = size.number;
 					}
 				}
 
-				function round_pixel( ) {
+				function roundPixel( ) {
 					return Math.round(size*100)/100;
 				}
 			}
 
-			function get_em_in_px( ) {
+			function getEmInPxRatio( ) {
 				return Number( getComputedStyle( document.body.parentNode, null).fontSize.replace( /[^\d\.]/g, '' ) );
 			}
 		}
 
-		function get_breakpoint_from_media_size_selector( media_size_selector_in_px ) {
+		function getBreakpointFromMediaSizeSelector( mediaSizeSelectorInPx ) {
 			var breakpoint = { };
-			if ( typeof ( media_size_selector_in_px.px ) != 'undefined' ) {
-				breakpoint.px = media_size_selector_in_px.px;
-				if ( media_size_selector_in_px.property == 'min-width' ||  media_size_selector_in_px.property == 'min-height' ) {
+			if ( typeof ( mediaSizeSelectorInPx.px ) != 'undefined' ) {
+				breakpoint.px = mediaSizeSelectorInPx.px;
+				if ( mediaSizeSelectorInPx.property == 'min-width' ||  mediaSizeSelectorInPx.property == 'min-height' ) {
 					breakpoint.px--;
 				}
 				breakpoint.px = Math.ceil(breakpoint.px);
 				if ( breakpoint.px > 0 ) {
-					if ( media_size_selector_in_px.property == 'max-width' ||  media_size_selector_in_px.property == 'min-width' ) {
+					if ( mediaSizeSelectorInPx.property == 'max-width' ||  mediaSizeSelectorInPx.property == 'min-width' ) {
 						breakpoint.type = 'width';
-					} else if ( media_size_selector_in_px.property == 'max-height' ||  media_size_selector_in_px.property == 'min-height' ) {
+					} else if ( mediaSizeSelectorInPx.property == 'max-height' ||  mediaSizeSelectorInPx.property == 'min-height' ) {
 						breakpoint.type = 'height';
 					}
 				}
@@ -160,56 +160,82 @@
 		}
 	}
 
-	function create_action_panel( ) {
+	function createActionPanel( ) {
 
-		var breakzones = { width: [ ], height: [ ] };
+		var fluidZones = { width: [ ], height: [ ] };
 
 		(function() {
-			get_breakzones_from_breakpoints( );
-			display_breakzones_action_panel( );
+			getFluidZonesFromBreakpoints( );
+			displayFluidZonesActionPanel( );
 		})();
 
-		function display_breakzones_action_panel( ) {
+        function getFluidZonesFromBreakpoints( ) {
 
-			var resized_window;
+            (function() {
+                formatFluidZonesByDirection( 'width' );
+                formatFluidZonesByDirection( 'height' );
+            })();
+
+            function formatFluidZonesByDirection( direction ) {
+                if ( breakpoints[ direction ].length != 0 ) {
+                    var old;
+                    for ( var i=0; i<breakpoints[ direction ].length; i++ ) {
+                        var point = breakpoints[ direction ][ i ] ;
+                        var zone = [ ];
+                        if ( old == null ) {
+                            zone.push( null );
+                        } else if ( old + 1 != point ) {
+                            zone.push( old + 1 );
+                        }
+                        zone.push( point );
+                        fluidZones[ direction ].push( zone );
+                        old = point;
+                    }
+                    fluidZones[ direction ].push( [ old + 1, '&larr; ' + direction ] );
+                }
+            }
+        }
+		function displayFluidZonesActionPanel( ) {
+
+			var resizedWindow;
 
 			(function() {
-				var panel = create_panel_element( );
+				var panel = createPanelElement( );
 				if ( breakpoints.width.length == 0 && breakpoints.height.length == 0 ) {
-					panel.add_information_to_panel( 'No breakpoint found' );
+					panel.addInformationToPanel( 'No breakpoint found' );
 				} else {
-					for ( var j=0; j<breakzones.height.length; j++ ) {
-						panel.add_resize_zone_to_panel( 'height', breakzones.height[ j ] );
-						panel.add_break_line_to_panel( );
+					for ( var j=0; j<fluidZones.height.length; j++ ) {
+						panel.addFluidZoneToPanel( 'height', fluidZones.height[ j ] );
+						panel.addBreakLineToPanel( );
 					}
-					panel.add_resize_zone_to_panel( 'no', ' ' );
-					for ( var i=breakzones.width.length-1; i>-1; i-- ) {
-						panel.add_resize_zone_to_panel( 'width', breakzones.width[ i ] );
+					panel.addFluidZoneToPanel( 'no', ' ' );
+					for ( var i=fluidZones.width.length-1; i>-1; i-- ) {
+						panel.addFluidZoneToPanel( 'width', fluidZones.width[ i ] );
 					}
-					panel.add_break_line_to_panel( );
+					panel.addBreakLineToPanel( );
 				}
 			})();
 
-			function create_panel_element( ) {
+			function createPanelElement( ) {
 
 				// internal
-				var panel = document.getElementById( 'panel_resize' );
+				var panel = document.getElementById( 'panelResize' );
 				if ( panel == null ) {
 					panel = document.createElement( 'div' );
-					panel.setAttribute( 'id', 'panel_resize' );
+					panel.setAttribute( 'id', 'panelResize' );
 					panel.setAttribute( 'style', 'position: fixed; bottom:10px; right: 10px; z-index: 999999; text-align: left;' );
 					document.body.appendChild( panel );
 				}
 
 				// private panel methods
-				function add_panel_element( element ) {
+				function addPanelElement( element ) {
 					element.setAttribute( 'style', 'text-align: center; background: rgba(0, 0, 0, 0.8); border-radius: 10px; padding: 10px; margin: 0 0 2px 2px; min-width: 80px; box-sizing: content-box; -moz-box-sizing: content-box; float: right; color: white; font-weight: normal; font-size: 16px; line-height: 16px; ' );
 					panel.appendChild( element );
 				}
 
 				// public panel methods
 				return {
-					add_resize_zone_to_panel: function( direction, values ) {
+					addFluidZoneToPanel: function( direction, values ) {
 
 						var values = values;
 
@@ -217,31 +243,31 @@
 							var zone = document.createElement( 'span' );
 							zone.innerHTML = '&nbsp;';
 							for ( var i=0; i<values.length; i++ ) {
-								zone.appendChild( create_resize_element( i ) );
+								zone.appendChild( createResizeElement( i ) );
 							}
-							add_panel_element( zone );
+							addPanelElement( zone );
 						})();
 
-						function create_resize_element( i ) {
+						function createResizeElement( i ) {
 
 							var element;
 
 							return (function() {
 								if ( typeof( values[ i ] ) == 'number' ) {
-									create_resize_button_element( i );
+									createResizeButtonElement( i );
 								} else {
-									create_resize_text_element( );
+									createResizeTextElement( );
 								}
 								element.innerHTML = values[ i ];
 								element.setAttribute( 'style', 'color: white; font-weight: bold; font-size: 16px; text-decoration: none; border: 0; float: ' + ( values.length == 1 ? 'none' : i == 0 ? 'left' : 'right' ) );
 								return element;
 							})();
 
-							function create_resize_text_element( ) {
+							function createResizeTextElement( ) {
 								element = document.createElement( 'span' );
 							}
 
-							function create_resize_button_element( ) {
+							function createResizeButtonElement( ) {
 								element = document.createElement( 'a' );
 								element.setAttribute( 'href', 'javascript:;' );
 								element.addEventListener( 'click', function( ) {
@@ -249,71 +275,44 @@
 									var alternate = direction == 'width' ? 'height' : 'width'; 
 									var Direction = direction.charAt( 0 ).toUpperCase( ) + direction.substr( 1 );
 									var Alternate = alternate.charAt( 0 ).toUpperCase( ) + alternate.substr( 1 );
-									var existing_popup = ( resized_window != null && ! resized_window.closed );
+									var existingPopup = ( resizedWindow != null && ! resizedWindow.closed );
 									size[ alternate ] = 600;
-									if ( existing_popup ) {
-										size[ alternate ] = resized_window[ 'outer' + Alternate ];
-										resized_window.close( );
+									if ( existingPopup ) {
+										size[ alternate ] = resizedWindow[ 'outer' + Alternate ];
+										resizedWindow.close( );
 									}
-									resized_window = window.open( window.location + '#', 'resized', 'resizable,scrollbars=1,width=800,height=600' );
-									var resize_popup = function( ) {
+									resizedWindow = window.open( window.location + '#', 'resized', 'resizable,scrollbars=1,width=800,height=600' );
+									var resizePopup = function( ) {
 										var innerSize;
 										if ( /AppleWebKit/.test(navigator.userAgent) ) {
-											innerSize = resized_window.document.documentElement[ 'client' + Direction ];
+											innerSize = resizedWindow.document.documentElement[ 'client' + Direction ];
 										} else {
-											innerSize = resized_window[ 'inner' + Direction ];
+											innerSize = resizedWindow[ 'inner' + Direction ];
 										}
-										size[ direction ] = values[ i ] + resized_window[ 'outer' + Direction ] - innerSize;
-										resized_window.resizeTo( size.width, size.height );
-										resized_window.focus( );
+										size[ direction ] = values[ i ] + resizedWindow[ 'outer' + Direction ] - innerSize;
+										resizedWindow.resizeTo( size.width, size.height );
+										resizedWindow.focus( );
 									};
 									var interval = setInterval( function( ) {
-										if ( resized_window.document.readyState !== 'complete' ) {
+										if ( resizedWindow.document.readyState !== 'complete' ) {
 											clearInterval( interval );
-											resize_popup( );
+											resizePopup( );
 										}
 									}, 100);
 								}, false );
 							}
 						}
 					},
-					add_information_to_panel: function( message ) {
+					addInformationToPanel: function( message ) {
 						var information = document.createElement( 'span' );
 						information.innerHTML = message;
-						add_panel_element( information );
+						addPanelElement( information );
 					},
-					add_break_line_to_panel: function( ) {
+					addBreakLineToPanel: function( ) {
 						var br = document.createElement( 'br' );
 						br.setAttribute( 'style', 'clear: both' );
 						panel.appendChild( br );
 					}
-				}
-			}
-		}
-
-		function get_breakzones_from_breakpoints( ) {
-
-			(function() {
-				format_breakzones_by_direction( 'width' );
-				format_breakzones_by_direction( 'height' );
-			})();
-
-			function format_breakzones_by_direction( direction ) {
-				if ( breakpoints[ direction ].length != 0 ) {
-					var old;
-					for ( var i=0; i<breakpoints[ direction ].length; i++ ) {
-						var point = breakpoints[ direction ][ i ] ;
-						var zone = [ ];
-						if ( old == null ) {
-							zone.push( null );
-						} else if ( old + 1 != point ) {
-							zone.push( old + 1 );
-						}
-						zone.push( point );
-						breakzones[ direction ].push( zone );
-						old = point;
-					}
-					breakzones[ direction ].push( [ old + 1, '&larr; ' + direction ] );
 				}
 			}
 		}
