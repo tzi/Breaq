@@ -203,7 +203,7 @@
 
 				// private panel methods
 				function add_panel_element( element ) {
-					element.setAttribute( 'style', 'text-align: center; background: rgba(0, 0, 0, 0.8); border-radius: 10px; padding: 10px; margin: 0 0 2px 2px; width: 100px; box-sizing: content-box; -moz-box-sizing: content-box; float: right; color: white; font-weight: normal; font-size: 16px; line-height: 16px; ' );
+					element.setAttribute( 'style', 'text-align: center; background: rgba(0, 0, 0, 0.8); border-radius: 10px; padding: 10px; margin: 0 0 2px 2px; min-width: 80px; box-sizing: content-box; -moz-box-sizing: content-box; float: right; color: white; font-weight: normal; font-size: 16px; line-height: 16px; ' );
 					panel.appendChild( element );
 				}
 
@@ -233,7 +233,7 @@
 									create_resize_text_element( );
 								}
 								element.innerHTML = values[ i ];
-								element.setAttribute( 'style', 'color: white; float: ' + ( values.length == 1 ? 'none' : i == 0 ? 'left' : 'right' ) );
+								element.setAttribute( 'style', 'color: white; font-weight: bold; font-size: 16px; text-decoration: none; border: 0; float: ' + ( values.length == 1 ? 'none' : i == 0 ? 'left' : 'right' ) );
 								return element;
 							})();
 
