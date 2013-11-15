@@ -305,7 +305,7 @@
 										resizedWindow.focus( );
 									};
 									var interval = setInterval( function( ) {
-										if ( resizedWindow.document.readyState !== 'complete' ) {
+										if ( resizedWindow.document.readyState == 'complete' ) {
 											clearInterval( interval );
 											resizePopup( );
 										}
