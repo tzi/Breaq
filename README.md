@@ -1,7 +1,7 @@
 Breaq
 =====
 
-Breaq is a bookmarklet to test our website at his critical sizes.
+Breaq is a bookmarklet to test a responsive website at his critical sizes.
 
 [See the official Breaq page](http://tzi.fr/CSS/Responsive/Breaq-bookmarklet) and try it.
 
