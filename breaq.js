@@ -135,8 +135,13 @@
 				}
 			}
 
-			function getEmInPxRatio( ) {
-				return Number( getComputedStyle( document.body.parentNode, null).fontSize.replace( /[^\d\.]/g, '' ) );
+			function getEmInPxRatio( ) {	
+				var html = document.documentElement;
+				var style = html.getAttribute('style');
+				html.setAttribute('style', style+';font-size:1em !important');
+				var baseline = parseFloat( getComputedStyle( html ).fontSize );
+				html.setAttribute('style', style);
+				return baseline;
 			}
 		}
 
