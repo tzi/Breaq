@@ -196,7 +196,7 @@
                         fluidZones[ direction ].push( zone );
                         old = point;
                     }
-                    fluidZones[ direction ].push( [ old + 1, '&larr; ' + direction ] );
+                    fluidZones[ direction ].push( [ old + 1, '&#8592; ' + direction ] );
                 }
             }
         }
@@ -244,7 +244,7 @@
 
 						(function() {
 							var zone = document.createElement( 'span' );
-							zone.innerHTML = '&nbsp;';
+							zone.innerHTML = '&#160;';
 							for ( var i=0; i<values.length; i++ ) {
 								zone.appendChild( createResizeElement( i ) );
 							}
