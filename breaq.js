@@ -249,6 +249,7 @@
                 } else {
                     for (var j = 0; j < fluidZoneList.height.length; j++) {
                         panel.addFluidZoneToPanel('height', fluidZoneList.height[ j ], 'height');
+                        panel.addBreakLineToPanel();
                     }
                     panel.addLinktoPanel('Breaq', 'http://tzi.fr/CSS/Responsive/Breaq-bookmarklet', 'See official project page');
                     for (var i = fluidZoneList.width.length-1; i>=0 ; i--) {
