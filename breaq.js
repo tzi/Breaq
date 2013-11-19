@@ -253,7 +253,7 @@
                     }
                     panel.addLinktoPanel('Breaq', 'http://tzi.fr/CSS/Responsive/Breaq-bookmarklet', 'See official project page');
                     for (var i = fluidZoneList.width.length-1; i>=0 ; i--) {
-                        panel.addFluidZoneToPanel('width', fluidZoneList.width[ i ]);
+                        panel.addFluidZoneToPanel('width', fluidZoneList.width[ i ], 'width');
                     }
                     panel.addBreakLineToPanel();
                 }
@@ -279,14 +279,36 @@
                     panel.appendChild(element);
                 }
 
+                function addInformationToPanel(message) {
+                    var information = document.createElement('span');
+                    information.innerHTML = message;
+                    addPanelElement(information);
+                }
+
+                function addLinktoPanel(label, href, title) {
+                    link = document.createElement('a');
+                    link.setAttribute('href', href);
+                    link.setAttribute('target', '_blank');
+                    link.setAttribute('title', title);
+                    link.innerHTML = label;
+                    addPanelElement(link);
+                }
+
+                function addBreakLineToPanel() {
+                    var br = document.createElement('br');
+                    br.setAttribute('style', 'clear: both');
+                    panel.appendChild(br);
+                }
+
                 // public panel methods
                 return {
-                    addFluidZoneToPanel: function (direction, zoneBreakpointList, href) {
+                    addFluidZoneToPanel: function (direction, zoneBreakpointList, direction) {
 
                         (function () {
                             var zone = document.createElement('span');
                             zone.innerHTML = '&#160;';
-                            for (var i=zoneBreakpointList.length-1; i>=0; i--) {
+                            var initialIndex = zoneBreakpointList.length-1;
+                            for (var i=initialIndex; i>=0; i--) {
                                 var element = createResizeElement(i);
                                 if (element) {
                                     panel.appendChild(createResizeElement(i));
@@ -330,7 +352,7 @@
                                 var targetSize = breakpoint.getCriticalSize(isSizeBeforeBreakpoint);
                                 element = document.createElement('a');
                                 element.setAttribute('href', 'javascript:;');
-                                element.setAttribute('title', 'Resize to '+targetSize+'px '+(breakpoint.isSizeMatch(targetSize)?'':'not ')+'to match: '+breakpoint.getMediaQuery());
+                                element.setAttribute('title', 'Resize to '+breakpoint.getLabel(isSizeBeforeBreakpoint)+' '+(breakpoint.isSizeMatch(targetSize)?'':'not ')+'to match: '+breakpoint.getMediaQuery());
                                 element.addEventListener('click', function () {
                                     var size = { };
                                     var alternate = direction == 'width' ? 'height' : 'width';
@@ -364,24 +386,9 @@
                             }
                         }
                     },
-                    addInformationToPanel: function (message) {
-                        var information = document.createElement('span');
-                        information.innerHTML = message;
-                        addPanelElement(information);
-                    },
-                    addLinktoPanel: function(label, href, title) {
-                        link = document.createElement('a');
-                        link.setAttribute('href', href);
-                        link.setAttribute('target', '_blank');
-                        link.setAttribute('title', title);
-                        link.innerHTML = label;
-                        addPanelElement(link);
-                    },
-                    addBreakLineToPanel: function () {
-                        var br = document.createElement('br');
-                        br.setAttribute('style', 'clear: both');
-                        panel.appendChild(br);
-                    }
+                    addInformationToPanel: addInformationToPanel,
+                    addLinktoPanel: addLinktoPanel,
+                    addBreakLineToPanel: addBreakLineToPanel
                 }
             }
         }
