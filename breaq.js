@@ -86,29 +86,35 @@
             isValid: function isValid() {
                 return ( valuePixel > 0 && typeof( propertyAxis ) != 'undefined' );
             },
-            getLabel: function getLabel(isBeforeBreakpoint) {
+            getLabel: function getLabel(isSizeBeforeBreakpoint) {
                 if (valueUnit == 'em') {
-                    if (isBeforeBreakpoint && propertyOperator == 'min') {
+                    if (isSizeBeforeBreakpoint && propertyOperator == 'min') {
                         return value+"-";
                     }
-                    if (!isBeforeBreakpoint && propertyOperator == 'max') {
+                    if (!isSizeBeforeBreakpoint && propertyOperator == 'max') {
                         return value+"+";
                     }
                     return value;
                 }
-                if (isBeforeBreakpoint) {
+                if (isSizeBeforeBreakpoint) {
                     return valuePixel-1;
                 }
                 return valuePixel;
             },
-            getCriticalSize: function getCriticalSize(isBeforeBreakpoint) {
-                if (isBeforeBreakpoint) {
+            getCriticalSize: function getCriticalSize(isSizeBeforeBreakpoint) {
+                if (isSizeBeforeBreakpoint) {
                     return valuePixel-1;
                 }
                 return valuePixel;
             },
             getMediaQuery: function getMediaQuery() {
                 return mediaQuery;
+            },
+            isSizeMatch: function isSizeMatch(size) {
+                if (propertyOperator == 'min') {
+                    return valuePixel<=size;
+                }
+                return valuePixel>size;
             }
         };
     };
@@ -244,7 +250,7 @@
                         panel.addBreakLineToPanel();
                     }
                     panel.addFluidZoneToPanel('no', ['Breaq'], 'http://tzi.fr/CSS/Responsive/Breaq-bookmarklet');
-                    for (var i = fluidZoneList.width.length - 1; i > -1; i--) {
+                    for (var i = fluidZoneList.width.length-1; i>=0 ; i--) {
                         panel.addFluidZoneToPanel('width', fluidZoneList.width[ i ]);
                     }
                     panel.addBreakLineToPanel();
@@ -258,27 +264,29 @@
                 if (panel == null) {
                     panel = document.createElement('div');
                     panel.setAttribute('id', 'panelResize');
-                    panel.setAttribute('style', 'position: fixed; bottom:10px; right: 10px; z-index: 999999; text-align: left;');
+                    panel.setAttribute('style', 'position: fixed; bottom:10px; right: 10px; z-index: 999999; text-align: right;');
                     document.body.appendChild(panel);
                 }
 
                 // private panel methods
                 function addPanelElement(element) {
-                    element.setAttribute('style', 'text-align: center; background: rgba(0, 0, 0, 0.8); border-radius: 10px; padding: 10px; margin: 0 0 2px 2px; min-width: 80px; box-sizing: content-box; -moz-box-sizing: content-box; float: right; color: white; font-weight: normal; font-size: 16px; line-height: 16px; ');
+                    element.setAttribute('style', 'text-align: center; margin: 0 0 2px 2px; min-width: 80px; box-sizing: content-box; -moz-box-sizing: content-box; float: right; color: white; font-weight: normal; font-size: 16px; line-height: 16px; ');
                     panel.appendChild(element);
                 }
 
                 // public panel methods
                 return {
-                    addFluidZoneToPanel: function (direction, values, href) {
+                    addFluidZoneToPanel: function (direction, zoneBreakpointList, href) {
 
                         (function () {
                             var zone = document.createElement('span');
                             zone.innerHTML = '&#160;';
-                            for (var i = 0; i < values.length; i++) {
-                                zone.appendChild(createResizeElement(i));
+                            for (var i=zoneBreakpointList.length-1; i>=0; i--) {
+                                var element = createResizeElement(i);
+                                if (element) {
+                                    panel.appendChild(createResizeElement(i));
+                                }
                             }
-                            addPanelElement(zone);
                         })();
 
                         function createResizeElement(i) {
@@ -286,20 +294,31 @@
                             var element;
 
                             return (function () {
-                                if (typeof( values[ i ] ) == 'object' && values[ i ] !== null) {
-                                    isBeforeBreakpoint = (i==1 || values.length==1);
-                                    createResizeButtonElement(values[i], isBeforeBreakpoint);
-                                    element.innerHTML = values[ i ].getLabel(isBeforeBreakpoint);
-                                } else {
+                                var style = 'float: right; margin: 0 3px 2px; border: 0; padding: 10px; background: rgba(0, 0, 0, 0.8); color: white; font-weight: bold; font-size: 16px; text-decoration: none;';
+                                if (typeof( zoneBreakpointList[ i ] ) == 'object' && zoneBreakpointList[ i ] !== null) {
+                                    var isSingleSize = (zoneBreakpointList.length==1);
+                                    var isSizeBeforeBreakpoint = (i==1 || isSingleSize);
+                                    createResizeButtonElement(zoneBreakpointList[i], isSizeBeforeBreakpoint);
+                                    element.innerHTML = zoneBreakpointList[ i ].getLabel(isSizeBeforeBreakpoint);
+                                    style += 'border-radius: '+(isSingleSize?'10px':isSizeBeforeBreakpoint?'0 10px 10px 0':'10px 0 0 10px')+';';
+                                    if (isSingleSize || isSizeBeforeBreakpoint) {
+                                        style += 'margin-right: 0;';
+                                    }
+                                    if (isSingleSize || !isSizeBeforeBreakpoint) {
+                                        style += 'margin-left: 0;';
+                                    }
+                                } else if (zoneBreakpointList[ i ]) {
                                     if (href) {
                                         createResizeLinkElement();
                                     } else {
                                         createResizeTextElement();
                                     }
-                                    element.innerHTML = values[ i ];
+                                    element.innerHTML = zoneBreakpointList[ i ];
                                 }
-                                element.setAttribute('style', 'color: white; font-weight: bold; font-size: 16px; text-decoration: none; border: 0; float: ' + ( values.length == 1 ? 'none' : i == 0 ? 'left' : 'right' ));
-                                return element;
+                                if (element) {
+                                    element.setAttribute('style', style);
+                                    return element;
+                                }
                             })();
 
                             function createResizeLinkElement() {
@@ -312,10 +331,11 @@
                                 element = document.createElement('span');
                             }
 
-                            function createResizeButtonElement(breakpoint, isBeforeBreakpoint) {
+                            function createResizeButtonElement(breakpoint, isSizeBeforeBreakpoint) {
+                                var targetSize = breakpoint.getCriticalSize(isSizeBeforeBreakpoint);
                                 element = document.createElement('a');
                                 element.setAttribute('href', 'javascript:;');
-                                element.setAttribute('title', breakpoint.getCriticalSize(isBeforeBreakpoint)+"px | "+breakpoint.getMediaQuery());
+                                element.setAttribute('title', 'Resize to '+targetSize+'px '+(breakpoint.isSizeMatch(targetSize)?'':'not ')+'to match: '+breakpoint.getMediaQuery());
                                 element.addEventListener('click', function () {
                                     var size = { };
                                     var alternate = direction == 'width' ? 'height' : 'width';
@@ -335,7 +355,7 @@
                                         } else {
                                             innerSize = resizedWindow[ 'inner' + Direction ];
                                         }
-                                        size[ direction ] = breakpoint.getCriticalSize(isBeforeBreakpoint) + resizedWindow[ 'outer' + Direction ] - innerSize;
+                                        size[ direction ] = targetSize + resizedWindow[ 'outer' + Direction ] - innerSize;
                                         resizedWindow.resizeTo(size.width, size.height);
                                         resizedWindow.focus();
                                     };
