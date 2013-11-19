@@ -57,14 +57,16 @@
         }
 
         function initValuePixel() {
+            var valuePixel;
             if (valueUnit == 'em') {
-                return roundPixel(valueNumber * getEmInPxRatio());
+                valuePixel = valueNumber * getEmInPxRatio();
             } else if (valueUnit == 'px') {
-                if (propertyOperator == 'max') {
-                    return valueNumber+1;
-                }
-                return valueNumber;
+                valuePixel =  valueNumber;
             }
+            if (propertyOperator == 'max') {
+                valuePixel++;
+            }
+            return roundPixel(valuePixel);
 
             function roundPixel(number) {
                 return Math.ceil(number);
@@ -246,10 +248,9 @@
                     panel.addInformationToPanel('No breakpoint found');
                 } else {
                     for (var j = 0; j < fluidZoneList.height.length; j++) {
-                        panel.addFluidZoneToPanel('height', fluidZoneList.height[ j ]);
-                        panel.addBreakLineToPanel();
+                        panel.addFluidZoneToPanel('height', fluidZoneList.height[ j ], 'height');
                     }
-                    panel.addFluidZoneToPanel('no', ['Breaq'], 'http://tzi.fr/CSS/Responsive/Breaq-bookmarklet');
+                    panel.addLinktoPanel('Breaq', 'http://tzi.fr/CSS/Responsive/Breaq-bookmarklet', 'See official project page');
                     for (var i = fluidZoneList.width.length-1; i>=0 ; i--) {
                         panel.addFluidZoneToPanel('width', fluidZoneList.width[ i ]);
                     }
@@ -258,6 +259,9 @@
             })();
 
             function createPanelElement() {
+
+                var boxStyle = 'float: right; margin: 0 3px 2px; border: 0; padding: 10px; background: rgba(0, 0, 0, 0.8);';
+                var textResetStyle = 'color: white; font-family: Arial, sans-serif;font-weight: normal; font-size: 16px; text-decoration: none;';
 
                 // internal
                 var panel = document.getElementById('panelResize');
@@ -270,7 +274,7 @@
 
                 // private panel methods
                 function addPanelElement(element) {
-                    element.setAttribute('style', 'text-align: center; margin: 0 0 2px 2px; min-width: 80px; box-sizing: content-box; -moz-box-sizing: content-box; float: right; color: white; font-weight: normal; font-size: 16px; line-height: 16px; ');
+                    element.setAttribute('style', boxStyle+' min-width: 80px; box-sizing: content-box; -moz-box-sizing: content-box; text-align: center; '+textResetStyle);
                     panel.appendChild(element);
                 }
 
@@ -294,7 +298,7 @@
                             var element;
 
                             return (function () {
-                                var style = 'float: right; margin: 0 3px 2px; border: 0; padding: 10px; background: rgba(0, 0, 0, 0.8); color: white; font-weight: bold; font-size: 16px; text-decoration: none;';
+                                var style = boxStyle+textResetStyle;
                                 if (typeof( zoneBreakpointList[ i ] ) == 'object' && zoneBreakpointList[ i ] !== null) {
                                     var isSingleSize = (zoneBreakpointList.length==1);
                                     var isSizeBeforeBreakpoint = (i==1 || isSingleSize);
@@ -308,11 +312,7 @@
                                         style += 'margin-left: 0;';
                                     }
                                 } else if (zoneBreakpointList[ i ]) {
-                                    if (href) {
-                                        createResizeLinkElement();
-                                    } else {
-                                        createResizeTextElement();
-                                    }
+                                    createResizeTextElement();
                                     element.innerHTML = zoneBreakpointList[ i ];
                                 }
                                 if (element) {
@@ -320,12 +320,6 @@
                                     return element;
                                 }
                             })();
-
-                            function createResizeLinkElement() {
-                                element = document.createElement('a');
-                                element.setAttribute('href', href);
-                                element.setAttribute('target', '_blank');
-                            }
 
                             function createResizeTextElement() {
                                 element = document.createElement('span');
@@ -373,6 +367,14 @@
                         var information = document.createElement('span');
                         information.innerHTML = message;
                         addPanelElement(information);
+                    },
+                    addLinktoPanel: function(label, href, title) {
+                        link = document.createElement('a');
+                        link.setAttribute('href', href);
+                        link.setAttribute('target', '_blank');
+                        link.setAttribute('title', title);
+                        link.innerHTML = label;
+                        addPanelElement(link);
                     },
                     addBreakLineToPanel: function () {
                         var br = document.createElement('br');
