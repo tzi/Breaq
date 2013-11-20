@@ -88,7 +88,7 @@
             isValid: function isValid() {
                 return ( valuePixel > 0 && typeof( propertyAxis ) != 'undefined' );
             },
-            getLabel: function getLabel(isSizeBeforeBreakpoint) {
+            getLabel: function getLabel(isSizeBeforeBreakpoint, displayPixelUnit) {
                 if (valueUnit == 'em') {
                     if (isSizeBeforeBreakpoint && propertyOperator == 'min') {
                         return value+"-";
@@ -98,10 +98,14 @@
                     }
                     return value;
                 }
+                var label = valuePixel;
                 if (isSizeBeforeBreakpoint) {
-                    return valuePixel-1;
+                     label = valuePixel-1;
                 }
-                return valuePixel;
+                if (displayPixelUnit) {
+                    label+="px";
+                }
+                return label;
             },
             getCriticalSize: function getCriticalSize(isSizeBeforeBreakpoint) {
                 if (isSizeBeforeBreakpoint) {
@@ -326,7 +330,7 @@
                                     var isSingleSize = (zoneBreakpointList.length==1);
                                     var isSizeBeforeBreakpoint = (i==1 || isSingleSize);
                                     createResizeButtonElement(zoneBreakpointList[i], isSizeBeforeBreakpoint);
-                                    element.innerHTML = zoneBreakpointList[ i ].getLabel(isSizeBeforeBreakpoint);
+                                    element.innerHTML = zoneBreakpointList[ i ].getLabel(isSizeBeforeBreakpoint, false);
                                     style += 'border-radius: '+(isSingleSize?'10px':isSizeBeforeBreakpoint?'0 10px 10px 0':'10px 0 0 10px')+';';
                                     if (isSingleSize || isSizeBeforeBreakpoint) {
                                         style += 'margin-right: 0;';
@@ -352,7 +356,7 @@
                                 var targetSize = breakpoint.getCriticalSize(isSizeBeforeBreakpoint);
                                 element = document.createElement('a');
                                 element.setAttribute('href', 'javascript:;');
-                                element.setAttribute('title', 'Resize to '+breakpoint.getLabel(isSizeBeforeBreakpoint)+' '+(breakpoint.isSizeMatch(targetSize)?'':'not ')+'to match: '+breakpoint.getMediaQuery());
+                                element.setAttribute('title', 'Resize to '+breakpoint.getLabel(isSizeBeforeBreakpoint, true)+' '+(breakpoint.isSizeMatch(targetSize)?'':'not ')+'to match: '+breakpoint.getMediaQuery());
                                 element.addEventListener('click', function () {
                                     var size = { };
                                     var alternate = direction == 'width' ? 'height' : 'width';
