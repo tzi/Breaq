@@ -356,7 +356,7 @@
                                 var targetSize = breakpoint.getCriticalSize(isSizeBeforeBreakpoint);
                                 element = document.createElement('a');
                                 element.setAttribute('href', 'javascript:;');
-                                element.setAttribute('title', 'Resize to '+breakpoint.getLabel(isSizeBeforeBreakpoint, true)+' '+(breakpoint.isSizeMatch(targetSize)?'':'not ')+'to match: '+breakpoint.getMediaQuery());
+                                element.setAttribute('title', 'Resize the '+breakpoint.axis+' to '+breakpoint.getLabel(isSizeBeforeBreakpoint, true)+' '+(breakpoint.isSizeMatch(targetSize)?'':'not ')+'to match: '+breakpoint.getMediaQuery());
                                 element.addEventListener('click', function () {
                                     var size = { };
                                     var alternate = direction == 'width' ? 'height' : 'width';
