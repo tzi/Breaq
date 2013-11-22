@@ -81,6 +81,23 @@
                 return baseline;
             }
         }
+        
+        function getCriticalSize(isSizeBeforeBreakpoint) {
+            if (isSizeBeforeBreakpoint) {
+                return valuePixel-1;
+            }
+            return valuePixel;
+        }
+        
+        function getCriticalSizeEmLabel(isSizeBeforeBreakpoint) {
+            if (isSizeBeforeBreakpoint && propertyOperator == 'min') {
+                return value+"-";
+            }
+            if (!isSizeBeforeBreakpoint && propertyOperator == 'max') {
+                return value+"+";
+            }
+            return value;
+        }
 
         return {
             px: valuePixel,
@@ -88,31 +105,20 @@
             isValid: function isValid() {
                 return ( valuePixel > 0 && typeof( propertyAxis ) != 'undefined' );
             },
-            getLabel: function getLabel(isSizeBeforeBreakpoint, displayPixelUnit) {
+            getCriticalSizeShortLabel: function getCriticalSizeShortLabel(isSizeBeforeBreakpoint) {
                 if (valueUnit == 'em') {
-                    if (isSizeBeforeBreakpoint && propertyOperator == 'min') {
-                        return value+"-";
-                    }
-                    if (!isSizeBeforeBreakpoint && propertyOperator == 'max') {
-                        return value+"+";
-                    }
-                    return value;
+                    return getCriticalSizeEmLabel(isSizeBeforeBreakpoint);
                 }
-                var label = valuePixel;
-                if (isSizeBeforeBreakpoint) {
-                     label = valuePixel-1;
-                }
-                if (displayPixelUnit) {
-                    label+="px";
-                }
-                return label;
+                return getCriticalSize(isSizeBeforeBreakpoint);
             },
-            getCriticalSize: function getCriticalSize(isSizeBeforeBreakpoint) {
-                if (isSizeBeforeBreakpoint) {
-                    return valuePixel-1;
+            getCriticalSizeLabel: function getCriticalSizeLabel(isSizeBeforeBreakpoint) {
+                if (valueUnit == 'em') {
+                    var label = getCriticalSizeEmLabel(isSizeBeforeBreakpoint);
+                    return label+" ("+getCriticalSize(isSizeBeforeBreakpoint)+"px)";
                 }
-                return valuePixel;
+                return getCriticalSize(isSizeBeforeBreakpoint)+"px";
             },
+            getCriticalSize: getCriticalSize,
             getMediaQuery: function getMediaQuery() {
                 return mediaQuery;
             },
@@ -330,7 +336,7 @@
                                     var isSingleSize = (zoneBreakpointList.length==1);
                                     var isSizeBeforeBreakpoint = (i==1 || isSingleSize);
                                     createResizeButtonElement(zoneBreakpointList[i], isSizeBeforeBreakpoint);
-                                    element.innerHTML = zoneBreakpointList[ i ].getLabel(isSizeBeforeBreakpoint, false);
+                                    element.innerHTML = zoneBreakpointList[ i ].getCriticalSizeShortLabel(isSizeBeforeBreakpoint);
                                     style += 'border-radius: '+(isSingleSize?'10px':isSizeBeforeBreakpoint?'0 10px 10px 0':'10px 0 0 10px')+';';
                                     if (isSingleSize || isSizeBeforeBreakpoint) {
                                         style += 'margin-right: 0;';
@@ -356,7 +362,7 @@
                                 var targetSize = breakpoint.getCriticalSize(isSizeBeforeBreakpoint);
                                 element = document.createElement('a');
                                 element.setAttribute('href', 'javascript:;');
-                                element.setAttribute('title', 'Resize the '+breakpoint.axis+' to '+breakpoint.getLabel(isSizeBeforeBreakpoint, true)+' '+(breakpoint.isSizeMatch(targetSize)?'':'not ')+'to match: '+breakpoint.getMediaQuery());
+                                element.setAttribute('title', 'Resize the '+breakpoint.axis+' to '+breakpoint.getCriticalSizeLabel(isSizeBeforeBreakpoint)+' '+(breakpoint.isSizeMatch(targetSize)?'':'not ')+'to match: '+breakpoint.getMediaQuery());
                                 element.addEventListener('click', function () {
                                     var size = { };
                                     var alternate = direction == 'width' ? 'height' : 'width';
