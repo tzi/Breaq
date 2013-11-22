@@ -264,7 +264,6 @@
                         panel.addFluidZoneToPanel('height', fluidZoneList.height[ j ], 'height');
                         panel.addBreakLineToPanel();
                     }
-                    panel.addLinktoPanel('Breaq', 'http://tzi.fr/CSS/Responsive/Breaq-bookmarklet', 'See official project page');
                     for (var i = fluidZoneList.width.length-1; i>=0 ; i--) {
                         panel.addFluidZoneToPanel('width', fluidZoneList.width[ i ], 'width');
                     }
@@ -274,39 +273,78 @@
 
             function createPanelElement() {
 
-                var panelElementId = 'BreaqBookmarkletPanel'
-                var boxStyle = 'float: right; margin: 0 3px 2px; border: 0; padding: 10px; background: rgba(0, 0, 0, 0.8);';
-                var textResetStyle = 'color: white; font-family: Arial, sans-serif;font-weight: normal; font-size: 16px; text-decoration: none;';
+                var baseElementId = 'BreaqBookmarklet';
+                var containerElementId = baseElementId+'Container';
+                var controlElementId = baseElementId+'Control';
+                var panelElementId = baseElementId+'Panel';
+                var boxStyle = 'margin: 0 3px 2px; border: 0; padding: 10px; background: rgba(0, 0, 0, 0.8);';
+                var textResetStyle = 'color: white; font-family: Arial, sans-serif;font-weight: normal; font-size: 14px; text-decoration: none;';
 
                 // internal
-                var panel = document.getElementById(panelElementId);
-                if (panel !== null) {
+                var container = document.getElementById(containerElementId);
+                if (container !== null) {
                     return ;
                 }
-                panel = document.createElement('div');
-                panel.setAttribute('id', panelElementId);
-                panel.setAttribute('style', 'position: fixed; bottom:10px; right: 10px; z-index: 999999; text-align: right;');
-                document.body.appendChild(panel);
+                container = document.createElement('div');
+                container.setAttribute('id', containerElementId);
+                
+                var control = createControlElement();
+                container.appendChild(control);
+                
+                var panel = createPanelElement();
+                container.appendChild(panel);
+                document.body.appendChild(container);
 
                 // private panel methods
-                function addPanelElement(element) {
-                    element.setAttribute('style', boxStyle+' min-width: 80px; box-sizing: content-box; -moz-box-sizing: content-box; text-align: center; '+textResetStyle);
-                    panel.appendChild(element);
+                function createControlElement() {
+                    var control = document.createElement('div');
+                    control.setAttribute('id', controlElementId);
+                    control.setAttribute('style', 'position: fixed; top:10px; left: 10px; z-index: 999999;');    
+                    addLinktoPanel('Breaq', 'http://tzi.fr/CSS/Responsive/Breaq-bookmarklet', 'See official project page', control);
+   
+                    var closeButton = document.createElement('a');
+                    closeButton.setAttribute('href', 'javascript:;');
+                    closeButton.setAttribute('title', 'Close BreaqBookmarklet');
+                    closeButton.addEventListener('click', function () {
+                        var container = document.getElementById(containerElementId);
+                        if (container !== null) {
+                            container.parentNode.removeChild(container);
+                        }
+                    }, false);
+                    closeButton.innerHTML = 'close';
+                    addPanelElement(closeButton, control);
+
+                    return control;
+                }
+                
+                function createPanelElement() {
+                    panel = document.createElement('div');
+                    panel.setAttribute('id', panelElementId);
+                    panel.setAttribute('style', 'position: fixed; bottom:10px; right: 10px; z-index: 999999;');
+                    return panel;
+                }
+                
+                function addPanelElement(element, parent) {
+                    if (typeof parent =='undefined') {
+                        parent = panel;
+                    }
+                    element.setAttribute('style', boxStyle+' display: inline-block; min-width: 80px; box-sizing: content-box; -moz-box-sizing: content-box; text-align: center; '+textResetStyle);
+                    parent.appendChild(element);
                 }
 
-                function addInformationToPanel(message) {
+                function addInformationToPanel(message, parent) {
                     var information = document.createElement('span');
                     information.innerHTML = message;
-                    addPanelElement(information);
+                    addPanelElement(information, parent);
                 }
 
-                function addLinktoPanel(label, href, title) {
+                function addLinktoPanel(label, href, title, parent) {
                     link = document.createElement('a');
                     link.setAttribute('href', href);
                     link.setAttribute('target', '_blank');
                     link.setAttribute('title', title);
                     link.innerHTML = label;
-                    addPanelElement(link);
+                    addPanelElement(link, parent);
                 }
 
                 function addBreakLineToPanel() {
@@ -336,7 +374,7 @@
                             var element;
 
                             return (function () {
-                                var style = boxStyle+textResetStyle;
+                                var style = boxStyle+' float: right;'+textResetStyle;
                                 if (typeof( zoneBreakpointList[ i ] ) == 'object' && zoneBreakpointList[ i ] !== null) {
                                     var isSingleSize = (zoneBreakpointList.length==1);
                                     var isSizeBeforeBreakpoint = (i==1 || isSingleSize);
