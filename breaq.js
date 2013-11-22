@@ -254,6 +254,9 @@
 
             (function () {
                 var panel = createPanelElement();
+                if (! panel) {
+                    return;
+                }
                 if (axisList.width.length == 0 && axisList.height.length == 0) {
                     panel.addInformationToPanel('No breakpoint found');
                 } else {
@@ -271,17 +274,19 @@
 
             function createPanelElement() {
 
+                var panelElementId = 'BreaqBookmarkletPanel'
                 var boxStyle = 'float: right; margin: 0 3px 2px; border: 0; padding: 10px; background: rgba(0, 0, 0, 0.8);';
                 var textResetStyle = 'color: white; font-family: Arial, sans-serif;font-weight: normal; font-size: 16px; text-decoration: none;';
 
                 // internal
-                var panel = document.getElementById('panelResize');
-                if (panel == null) {
-                    panel = document.createElement('div');
-                    panel.setAttribute('id', 'panelResize');
-                    panel.setAttribute('style', 'position: fixed; bottom:10px; right: 10px; z-index: 999999; text-align: right;');
-                    document.body.appendChild(panel);
+                var panel = document.getElementById(panelElementId);
+                if (panel !== null) {
+                    return ;
                 }
+                panel = document.createElement('div');
+                panel.setAttribute('id', panelElementId);
+                panel.setAttribute('style', 'position: fixed; bottom:10px; right: 10px; z-index: 999999; text-align: right;');
+                document.body.appendChild(panel);
 
                 // private panel methods
                 function addPanelElement(element) {
