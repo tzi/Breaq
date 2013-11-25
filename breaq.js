@@ -64,13 +64,11 @@
                 valuePixel =  valueNumber;
             }
             if (propertyOperator == 'max') {
-                valuePixel++;
+                valuePixel = Math.floor(valuePixel+1);
+            } else {
+                valuePixel = Math.ceil(valuePixel);
             }
-            return roundPixel(valuePixel);
-
-            function roundPixel(number) {
-                return Math.ceil(number);
-            }
+            return valuePixel;
 
             function getEmInPxRatio() {
                 var html = document.documentElement;
@@ -418,13 +416,8 @@
                                         resizedWindow.close();
                                     }
                                     resizedWindow = window.open(window.location + '#', 'resized', 'resizable,scrollbars=1,width=800,height=600');
-                                    var resizePopup = function () {
-                                        var innerSize;
-                                        if (/AppleWebKit/.test(navigator.userAgent)) {
-                                            innerSize = resizedWindow.document.documentElement[ 'client' + Direction ];
-                                        } else {
-                                            innerSize = resizedWindow[ 'inner' + Direction ];
-                                        }
+                                    var resizePopup = function resizePopup() {
+                                        var innerSize = resizedWindow[ 'inner' + Direction ];
                                         size[ direction ] = targetSize + resizedWindow[ 'outer' + Direction ] - innerSize;
                                         resizedWindow.resizeTo(size.width, size.height);
                                         resizedWindow.focus();
