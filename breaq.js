@@ -298,7 +298,7 @@
                     var control = document.createElement('div');
                     control.setAttribute('id', controlElementId);
                     control.setAttribute('style', 'position: fixed; top:10px; left: 10px; z-index: 999999;');    
-                    addLinktoPanel('Breaq', 'http://tzi.fr/CSS/Responsive/Breaq-bookmarklet', 'See official project page', control);
+                    addLinktoPanel('Breaq', 'http://tzi.fr/css/breaq-bookmarklet', 'See official project page', control);
    
                     var closeButton = document.createElement('a');
                     closeButton.setAttribute('href', 'javascript:;');
