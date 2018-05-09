@@ -3,7 +3,7 @@ Breaq
 
 Breaq is a bookmarklet to test a responsive website at its critical sizes.
 
-[See the official Breaq page](http://tzi.fr/CSS/Responsive/Breaq-bookmarklet) and try it.
+[See the official Breaq page](https://tzi.fr/css/breaq-bookmarklet) and try it.
 
 
 
@@ -23,4 +23,4 @@ Author & Community
 
 Breaq is under [MIT License](http://opensource.org/licenses/MIT).
 
-It is created and maintained by [Thomas ZILLIOX](http://tzi.fr).
+It is created and maintained by [Thomas ZILLIOX](https://tzi.fr).
